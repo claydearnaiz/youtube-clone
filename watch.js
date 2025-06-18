@@ -81,9 +81,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // A helper function to decide which API endpoint to use
+    function getApiUrl(params) {
+        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+        
+        if (isLocal) {
+            const endpoint = params.get('endpoint');
+            params.delete('endpoint');
+            params.append('key', window.API_KEY);
+            return `https://www.googleapis.com/youtube/v3/${endpoint}?${params}`;
+        } else {
+            return `/api/youtube?${params}`;
+        }
+    }
+
     async function fetchVideoDetails(id) {
         const params = new URLSearchParams({ endpoint: 'videos', part: 'snippet,statistics', id });
-        const response = await fetch(`/api/youtube?${params}`);
+        const url = getApiUrl(params);
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch video details');
         const data = await response.json();
         return data.items[0];
@@ -97,8 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
             maxResults: 20,
             order: 'relevance'
         });
+        const url = getApiUrl(params);
         try {
-            const response = await fetch(`/api/youtube?${params}`);
+            const response = await fetch(url);
             if (!response.ok) { console.error("Could not fetch comments"); return []; }
             const data = await response.json();
             return data.items;
@@ -116,7 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'video',
             maxResults: 15
         });
-        const response = await fetch(`/api/youtube?${params}`);
+        const url = getApiUrl(params);
+        const response = await fetch(url);
         if (!response.ok) { console.error("Could not fetch recommendations"); return []; }
         const data = await response.json();
         return data.items;
@@ -128,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
             part: 'snippet,statistics',
             id: channelId
         });
-        const response = await fetch(`/api/youtube?${params}`);
+        const url = getApiUrl(params);
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch channel details');
         const data = await response.json();
         return data.items[0];

@@ -17,37 +17,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchAndRenderResults(searchQuery) {
-        const searchParams = new URLSearchParams({
-            endpoint: 'search',
-            part: 'snippet',
-            q: encodeURIComponent(searchQuery),
-            type: 'video',
-            maxResults: 25
-        });
+        // --- Environment Detection ---
+        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:';
         
         try {
-            const response = await fetch(`/api/youtube?${searchParams}`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            
-            if (data.items.length === 0) {
-                searchResultsContainer.innerHTML = '<p>No results found.</p>';
-                return;
+            let searchResponse, detailsResponse;
+            const encodedQuery = encodeURIComponent(searchQuery);
+
+            if (isLocal) {
+                // --- Local Development Path (uses config.js) ---
+                const BASE_URL = 'https://www.googleapis.com/youtube/v3';
+                const searchUrl = `${BASE_URL}/search?part=snippet&q=${encodedQuery}&type=video&maxResults=25&key=${window.API_KEY}`;
+                searchResponse = await fetch(searchUrl);
+                const searchData = await searchResponse.json();
+                if (!searchResponse.ok) throw new Error(searchData.error.message);
+                if (searchData.items.length === 0) {
+                    searchResultsContainer.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                const detailsUrl = `${BASE_URL}/videos?part=statistics,contentDetails&id=${videoIds}&key=${window.API_KEY}`;
+                detailsResponse = await fetch(detailsUrl);
+            } else {
+                // --- Deployed/Production Path (uses /api proxy) ---
+                const searchParams = new URLSearchParams({ endpoint: 'search', part: 'snippet', q: encodedQuery, type: 'video', maxResults: 25 });
+                searchResponse = await fetch(`/api/youtube?${searchParams}`);
+                const searchData = await searchResponse.json();
+                if (!searchResponse.ok) throw new Error('Network response was not ok');
+                if (searchData.items.length === 0) {
+                    searchResultsContainer.innerHTML = '<p>No results found.</p>';
+                    return;
+                }
+
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                const detailsParams = new URLSearchParams({ endpoint: 'videos', part: 'statistics,contentDetails', id: videoIds });
+                detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
             }
 
-            const videoIds = data.items.map(item => item.id.videoId).join(',');
-            
-            const detailsParams = new URLSearchParams({
-                endpoint: 'videos',
-                part: 'statistics,contentDetails',
-                id: videoIds
-            });
-            const detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
-            
             if (!detailsResponse.ok) throw new Error('Failed to fetch video details');
             const detailsData = await detailsResponse.json();
 
-            const combinedResults = data.items.map(item => {
+            const combinedResults = searchData.items.map(item => {
                 const details = detailsData.items.find(d => d.id === item.id.videoId);
                 return {
                     ...item,

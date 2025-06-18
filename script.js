@@ -55,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {Promise<Array<Object>>} A promise that resolves with video data.
      */
     async function fetchVideos(category = 'all') {
+        // --- Environment Detection ---
+        // Use the proxy for deployed environments, and direct API calls with a local key for local development.
+        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+        
         const popularQueries = [
             'Software Engineering', 'Productivity Hacks', 'ReactJS Tutorials', 'JavaScript Crash Course', 'DIY Home Projects', 
             'Space Documentaries', 'Healthy Cooking Recipes', 'Workout Motivation 2024', 'Latest Financial News', 'Stand Up Comedy Specials',
@@ -67,39 +71,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 const randomQuery = popularQueries[Math.floor(Math.random() * popularQueries.length)];
                 query = randomQuery;
             }
-            
-            // Call our proxy API
-            const searchParams = new URLSearchParams({
-                endpoint: 'search',
-                part: 'snippet',
-                q: query,
-                type: 'video',
-                maxResults: 24
-            });
-            const response = await fetch(`/api/youtube?${searchParams}`);
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API Error: ${errorData.error.message}`);
-            }
-            const data = await response.json();
 
-            if (data.items.length === 0) {
-                return [];
+            let searchResponse, detailsResponse;
+
+            if (isLocal) {
+                // --- Local Development Path (uses config.js) ---
+                const BASE_URL = 'https://www.googleapis.com/youtube/v3';
+                const searchUrl = `${BASE_URL}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=24&key=${window.API_KEY}`;
+                searchResponse = await fetch(searchUrl);
+                const searchData = await searchResponse.json();
+                if (!searchResponse.ok) throw new Error(searchData.error.message);
+                if (searchData.items.length === 0) return [];
+                
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                const detailsUrl = `${BASE_URL}/videos?part=snippet,contentDetails,statistics&id=${videoIds}&key=${window.API_KEY}`;
+                detailsResponse = await fetch(detailsUrl);
+
+            } else {
+                // --- Deployed/Production Path (uses /api proxy) ---
+                const searchParams = new URLSearchParams({ endpoint: 'search', part: 'snippet', q: query, type: 'video', maxResults: 24 });
+                searchResponse = await fetch(`/api/youtube?${searchParams}`);
+                const searchData = await searchResponse.json();
+                if (!searchResponse.ok) throw new Error(searchData.error.message);
+                if (searchData.items.length === 0) return [];
+
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                const detailsParams = new URLSearchParams({ endpoint: 'videos', part: 'snippet,contentDetails,statistics', id: videoIds });
+                detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
             }
             
-            const videoIds = data.items.map(item => item.id.videoId).join(',');
-            
-            // Call our proxy API for video details
-            const detailsParams = new URLSearchParams({
-                endpoint: 'videos',
-                part: 'snippet,contentDetails,statistics',
-                id: videoIds
-            });
-            const detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
-
             if (!detailsResponse.ok) {
-                throw new Error('Failed to fetch video details');
+                const errorData = await detailsResponse.json();
+                throw new Error(`Failed to fetch video details: ${errorData.error.message}`);
             }
             const detailsData = await detailsResponse.json();
             
