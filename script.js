@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {Promise<Array<Object>>} A promise that resolves with video data.
      */
     async function fetchVideos(category = 'all') {
-        const API_KEY = 'AIzaSyBfbv1YRGe_jLlJdbEVUK_8MQ6dKe2hHf4';
         const BASE_URL = 'https://www.googleapis.com/youtube/v3';
         
         const popularQueries = [

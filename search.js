@@ -3,11 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchResultsGrid = document.getElementById('searchResults');
     const searchInput = document.getElementById('searchInput');
 
-    const API_KEY = 'AIzaSyBfbv1YRGe_jLlJdbEVUK_8MQ6dKe2hHf4';
     const BASE_URL = 'https://www.googleapis.com/youtube/v3';
-
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('q');
+    const query = getQueryFromURL();
 
     if (query) {
         searchResultsTitle.textContent = `Search results for "${query}"`;
@@ -63,5 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = createVideoCard(video);
             searchResultsGrid.appendChild(card);
         });
+    }
+
+    /**
+     * Gets the search query from the URL parameters.
+     * @returns {string|null} The search query or null if not present.
+     */
+    function getQueryFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('q');
     }
 }); 

@@ -1,0 +1,5 @@
+# Ignore the configuration file containing secrets
+config.js
+
+# Ignore Node.js dependencies
+node_modules 

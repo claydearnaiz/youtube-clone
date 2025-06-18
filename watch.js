@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const localLikes = JSON.parse(localStorage.getItem('yt-clone-likes')) || {};
 
     // --- INITIALIZATION ---
-    const API_KEY = 'AIzaSyBfbv1YRGe_jLlJdbEVUK_8MQ6dKe2hHf4'; // IMPORTANT: Replace with your YouTube Data API v3 key
     const BASE_URL = 'https://www.googleapis.com/youtube/v3';
     const videoId = getVideoIdFromURL();
 
