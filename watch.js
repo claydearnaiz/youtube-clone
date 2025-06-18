@@ -82,17 +82,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchVideoDetails(id) {
-        const url = `${BASE_URL}/videos?part=snippet,statistics&id=${id}&key=${API_KEY}`;
-        const response = await fetch(url);
+        const params = new URLSearchParams({ endpoint: 'videos', part: 'snippet,statistics', id });
+        const response = await fetch(`/api/youtube?${params}`);
         if (!response.ok) throw new Error('Failed to fetch video details');
         const data = await response.json();
         return data.items[0];
     }
 
     async function fetchComments(id) {
-        const url = `${BASE_URL}/commentThreads?part=snippet&videoId=${id}&maxResults=20&order=relevance&key=${API_KEY}`;
+        const params = new URLSearchParams({
+            endpoint: 'commentThreads',
+            part: 'snippet',
+            videoId: id,
+            maxResults: 20,
+            order: 'relevance'
+        });
         try {
-            const response = await fetch(url);
+            const response = await fetch(`/api/youtube?${params}`);
             if (!response.ok) { console.error("Could not fetch comments"); return []; }
             const data = await response.json();
             return data.items;
@@ -103,16 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchRecommendations(id) {
-        const url = `${BASE_URL}/search?part=snippet&relatedToVideoId=${id}&type=video&maxResults=15&key=${API_KEY}`;
-        const response = await fetch(url);
+        const params = new URLSearchParams({
+            endpoint: 'search',
+            part: 'snippet',
+            relatedToVideoId: id,
+            type: 'video',
+            maxResults: 15
+        });
+        const response = await fetch(`/api/youtube?${params}`);
         if (!response.ok) { console.error("Could not fetch recommendations"); return []; }
         const data = await response.json();
         return data.items;
     }
     
     async function fetchChannelDetails(channelId) {
-        const url = `${BASE_URL}/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`;
-        const response = await fetch(url);
+        const params = new URLSearchParams({
+            endpoint: 'channels',
+            part: 'snippet,statistics',
+            id: channelId
+        });
+        const response = await fetch(`/api/youtube?${params}`);
         if (!response.ok) throw new Error('Failed to fetch channel details');
         const data = await response.json();
         return data.items[0];

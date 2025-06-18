@@ -55,8 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {Promise<Array<Object>>} A promise that resolves with video data.
      */
     async function fetchVideos(category = 'all') {
-        const BASE_URL = 'https://www.googleapis.com/youtube/v3';
-        
         const popularQueries = [
             'Software Engineering', 'Productivity Hacks', 'ReactJS Tutorials', 'JavaScript Crash Course', 'DIY Home Projects', 
             'Space Documentaries', 'Healthy Cooking Recipes', 'Workout Motivation 2024', 'Latest Financial News', 'Stand Up Comedy Specials',
@@ -64,21 +62,26 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         try {
-            let url;
             let query = category;
             if (category === 'all') {
                 const randomQuery = popularQueries[Math.floor(Math.random() * popularQueries.length)];
                 query = randomQuery;
             }
             
-            url = `${BASE_URL}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=24&key=${API_KEY}`;
-
-            const response = await fetch(url);
+            // Call our proxy API
+            const searchParams = new URLSearchParams({
+                endpoint: 'search',
+                part: 'snippet',
+                q: query,
+                type: 'video',
+                maxResults: 24
+            });
+            const response = await fetch(`/api/youtube?${searchParams}`);
+            
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(`API Error: ${errorData.error.message}`);
             }
-
             const data = await response.json();
 
             if (data.items.length === 0) {
@@ -87,8 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const videoIds = data.items.map(item => item.id.videoId).join(',');
             
-            const detailsUrl = `${BASE_URL}/videos?part=snippet,contentDetails,statistics&id=${videoIds}&key=${API_KEY}`;
-            const detailsResponse = await fetch(detailsUrl);
+            // Call our proxy API for video details
+            const detailsParams = new URLSearchParams({
+                endpoint: 'videos',
+                part: 'snippet,contentDetails,statistics',
+                id: videoIds
+            });
+            const detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
+
             if (!detailsResponse.ok) {
                 throw new Error('Failed to fetch video details');
             }
