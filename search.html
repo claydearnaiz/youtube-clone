@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - YouTube Clone</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="search-styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff0000'><path d='M23.5 6.2c-.3-1.2-1.2-2.1-2.4-2.4C19.4 3.5 12 3.5 12 3.5s-7.4 0-9.1.3C1.7 4.1.8 5 .5 6.2 0 8 0 12 0 12s0 4 .5 5.8c.3 1.2 1.2 2.1 2.4 2.4 1.7.3 9.1.3 9.1.3s7.4 0 9.1-.3c1.2-.3 2.1-1.2 2.4-2.4.5-1.8.5-5.8.5-5.8s0-4-.5-5.8zM9.5 15.5v-7l6 3.5-6 3.5z'/></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </button>
+            <a href="index.html" class="logo">
+                <svg viewBox="0 0 90 20" width="90" height="20">
+                    <path d="M27.9727 3.12324C27.6435 1.89323 26.6768 0.926623 25.4468 0.597366C23.2197 2.24288e-07 14.285 0 14.285 0C14.285 0 5.35042 2.24288e-07 3.12323 0.597366C1.89323 0.926623 0.926623 1.89323 0.597366 3.12324C2.24288e-07 5.35042 0 10 0 10C0 10 2.24288e-07 14.6496 0.597366 16.8768C0.926623 18.1068 1.89323 19.0734 3.12323 19.4026C5.35042 20 14.285 20 14.285 20C14.285 20 23.2197 20 25.4468 19.4026C26.6768 19.0734 27.6435 18.1068 27.9727 16.8768C28.5701 14.6496 28.5701 10 28.5701 10C28.5701 10 28.5701 5.35042 27.9727 3.12324Z" fill="#FF0000"/>
+                    <path d="M11.4253 14.2854L18.8477 10.0004L11.4253 5.71533V14.2854Z" fill="white"/>
+                </svg>
+                <span class="logo-text">YouTube</span>
+            </a>
+        </div>
+        
+        <div class="header-center">
+            <form class="search-container">
+                <input type="text" class="search-input" placeholder="Search" id="searchInput">
+                <button type="submit" class="search-btn">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        
+        <div class="header-right">
+            <div class="user-avatar" id="userAvatar">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=32&h=32&fit=crop&crop=face" alt="User Avatar">
+            </div>
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profileDropdown">
+                <!-- Dropdown content here -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-section">
+            <a href="index.html" class="sidebar-link active">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M10 8v8l6-4-6-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                </svg>
+                <span>Shorts</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M18.7 3H5.3c-.4 0-.7.3-.7.7v.8c0 .4.3.7.7.7h13.4c.4 0 .7-.3.7-.7v-.8c0-.4-.3-.7-.7-.7zM19 6H5c-.6 0-1 .4-1 1v11c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V7c0-.6-.4-1-1-1zm-1 12H6V8h12v10z"/>
+                </svg>
+                <span>Subscriptions</span>
+                <span class="notification-dot"></span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">You</h3>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M14.97 16.95L10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span>History</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M22 16h-6.2l3.21-3.21L18 11.38 15.38 14 13.06 11.68l1.41-1.41L16.62 12H22v4zM5.04 6.05L3.63 4.63 2.22 6.05l1.41 1.41L5.04 6.05zm11.3.71l-1.41-1.41-1.41 1.41 1.41 1.41 1.41-1.41zM13 1h-2v3h2V1zm-6.63 2.37L4.96 4.78 6.37 6.19 7.78 4.78 6.37 3.37zm13.26 0l-1.41 1.41 1.41 1.41 1.41-1.41-1.41-1.41zM7.38 10.62L5.04 12.95l1.41 1.41 2.33-2.33L7.38 10.62z"/>
+                </svg>
+                <span>Playlists</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"/>
+                </svg>
+                <span>Your videos</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span>Liked videos</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M14.97 16.95L10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span>Watch later</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Subscriptions</h3>
+            <a href="#" class="sidebar-link subscription">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=24&h=24&fit=crop&crop=face" alt="Channel">
+                <span>Tech Channel</span>
+                <span class="live-indicator">LIVE</span>
+            </a>
+            <a href="#" class="sidebar-link subscription">
+                <img src="https://images.unsplash.com/photo-1494790108755-2616b5ad4e0f?w=24&h=24&fit=crop&crop=face" alt="Channel">
+                <span>Gaming World</span>
+                <span class="notification-dot"></span>
+            </a>
+            <a href="#" class="sidebar-link subscription">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" alt="Channel">
+                <span>Music Hub</span>
+            </a>
+            <button class="sidebar-link show-more">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                </svg>
+                <span>Show more</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Explore</h3>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                </svg>
+                <span>Trending</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <span>Music</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/>
+                </svg>
+                <span>Gaming</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                <span>Sports</span>
+            </a>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Press</a>
+                <a href="#">Copyright</a>
+                <a href="#">Contact us</a>
+                <a href="#">Creators</a>
+                <a href="#">Advertise</a>
+                <a href="#">Developers</a>
+            </div>
+            <div class="footer-links">
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Policy & Safety</a>
+                <a href="#">How YouTube works</a>
+                <a href="#">Test new features</a>
+            </div>
+            <div class="copyright">
+                © 2025 Google LLC
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="search-results-container">
+            <h2 class="search-query-heading" id="searchQueryHeading">Search results for ""</h2>
+            <div class="search-results" id="searchResults">
+                <!-- Search results will be dynamically loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <script src="utils.js"></script>
+    <script src="search.js"></script>
+</body>
+</html> 

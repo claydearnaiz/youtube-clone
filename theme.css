@@ -1,0 +1,137 @@
+/* Profile Dropdown */
+.profile-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 24px;
+    width: 300px;
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 1000;
+}
+
+.profile-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.dropdown-header .user-avatar {
+    margin-right: 12px;
+}
+
+.dropdown-username {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-username span:first-child {
+    font-weight: 500;
+}
+
+.dropdown-username span:last-child {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 8px 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.dropdown-item svg {
+    margin-right: 16px;
+    width: 24px;
+    height: 24px;
+}
+
+/* Theme Switch */
+.dropdown-item .theme-switch {
+    margin-left: auto;
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4ea3ff;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Light Mode Theme */
+body.light-mode {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f1f1f1;
+    --bg-tertiary: #e5e5e5;
+    --text-primary: #030303;
+    --text-secondary: #606060;
+    --border-color: #e0e0e0;
+    --hover-bg: #e5e5e5;
+}
+
+body.light-mode .subscribe-btn {
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+}
+
+body.light-mode .search-input {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+} 

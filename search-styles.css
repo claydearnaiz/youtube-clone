@@ -1,0 +1,47 @@
+.search-results-container {
+    padding: 24px;
+    margin-left: 240px; /* Adjust if you have a persistent sidebar */
+}
+
+#searchResultsTitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+}
+
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px 16px;
+}
+
+/* We can reuse the .video-card styles from styles.css */
+/* If search result items have a different layout, add styles here. */
+/* For example, a horizontal layout: */
+
+/*
+.search-results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.video-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.video-card .video-thumbnail {
+    width: 360px;
+    flex-shrink: 0;
+}
+
+.video-card .video-details {
+    padding-top: 0;
+    align-items: flex-start;
+}
+*/ 
