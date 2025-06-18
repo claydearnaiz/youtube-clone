@@ -55,10 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {Promise<Array<Object>>} A promise that resolves with video data.
      */
     async function fetchVideos(category = 'all') {
-        // --- Environment Detection ---
-        // Use the proxy for deployed environments, and direct API calls with a local key for local development.
-        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.protocol === 'file:';
-        
         const popularQueries = [
             'Software Engineering', 'Productivity Hacks', 'ReactJS Tutorials', 'JavaScript Crash Course', 'DIY Home Projects', 
             'Space Documentaries', 'Healthy Cooking Recipes', 'Workout Motivation 2024', 'Latest Financial News', 'Stand Up Comedy Specials',
@@ -72,39 +68,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 query = randomQuery;
             }
 
-            let searchResponse, detailsResponse;
+            const searchParams = new URLSearchParams({
+                endpoint: 'search',
+                part: 'snippet',
+                q: query,
+                type: 'video',
+                maxResults: 24
+            });
+            const searchResponse = await fetch(`/api/youtube?${searchParams}`);
+            const searchData = await searchResponse.json();
 
-            if (isLocal) {
-                // --- Local Development Path (uses config.js) ---
-                const BASE_URL = 'https://www.googleapis.com/youtube/v3';
-                const searchUrl = `${BASE_URL}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=24&key=${window.API_KEY}`;
-                searchResponse = await fetch(searchUrl);
-                const searchData = await searchResponse.json();
-                if (!searchResponse.ok) throw new Error(searchData.error.message);
-                if (searchData.items.length === 0) return [];
-                
-                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
-                const detailsUrl = `${BASE_URL}/videos?part=snippet,contentDetails,statistics&id=${videoIds}&key=${window.API_KEY}`;
-                detailsResponse = await fetch(detailsUrl);
-
-            } else {
-                // --- Deployed/Production Path (uses /api proxy) ---
-                const searchParams = new URLSearchParams({ endpoint: 'search', part: 'snippet', q: query, type: 'video', maxResults: 24 });
-                searchResponse = await fetch(`/api/youtube?${searchParams}`);
-                const searchData = await searchResponse.json();
-                if (!searchResponse.ok) throw new Error(searchData.error.message);
-                if (searchData.items.length === 0) return [];
-
-                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
-                const detailsParams = new URLSearchParams({ endpoint: 'videos', part: 'snippet,contentDetails,statistics', id: videoIds });
-                detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
+            if (!searchResponse.ok) {
+                throw new Error(searchData.error?.message || 'Failed to fetch search results');
             }
+            if (searchData.items.length === 0) {
+                return [];
+            }
+
+            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+            
+            const detailsParams = new URLSearchParams({
+                endpoint: 'videos',
+                part: 'snippet,contentDetails,statistics',
+                id: videoIds
+            });
+            const detailsResponse = await fetch(`/api/youtube?${detailsParams}`);
+            const detailsData = await detailsResponse.json();
             
             if (!detailsResponse.ok) {
-                const errorData = await detailsResponse.json();
-                throw new Error(`Failed to fetch video details: ${errorData.error.message}`);
+                throw new Error(detailsData.error?.message || 'Failed to fetch video details');
             }
-            const detailsData = await detailsResponse.json();
             
             return detailsData.items;
 
